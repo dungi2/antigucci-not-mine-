@@ -1,1 +1,405 @@
-do local Rayfield=loadstring(game:HttpGet("https://sirius.menu/rayfield"))();plr=game.Players.LocalPlayer;cam=workspace.CurrentCamera;mouse=plr:GetMouse();uis=game:GetService("UserInputService");inv=workspace:WaitForChild(plr.Name   .. "SpawnedInToys" );rs=game:GetService("ReplicatedStorage");rs2=game:GetService("RunService");deb=game:GetService("Debris");flingT=nil;killGrabT=nil;infLineExtendT=nil;antiGrab1T=nil;antiGrab1AnchorT=true;antiBlob1T=nil;antiExplodeT=true;antiLagT=nil;antiStickyT=nil;blobLoopT=nil;walkSpeedT=nil;jumpPowerT=nil;infJumpT=nil;noClipT=nil;floatT=nil;masslessT=nil;blobLoopServerT=nil;blobLoopServerTwoHandT=nil;silentBlobServerT=nil;lagT=nil;pingT=nil;shurikenLagServerT=nil;slideTPT=nil;inspectT=false;inspectInfoT=false;inspectInfoOnT=false;ragdollSpamT=false;permRagdollT=nil;autoGucciT=nil;destroyAutoGucciT=nil;sitJumpT=false;floatUpT=false;floatDownT=false;zoomT=false;spychatT=nil;spySelfT=nil;publicSpyT=nil;strengthV=1000;lineDistanceV=0;increaseLineExtendV=0;walkSpeedV=16;jumpPowerV=24;floatY= -3.1;zoomV=20;linesV=400;packetsV=3000;playersInLoop1V={};playersInLoop2V={};currentHouseS=0;blobmanInstanceS=nil;currentBlobS=nil;currentInspectS=0;currentHouseInspectS=0;currentInspectedAdorneeS=nil;currentInspectedPartS=nil;permRagdollRunningS=false;returnPosS=CFrame.new(0,0,0);mouseTargetS=nil;infJumpD=false;inspectD=false;slideTPD=false;ragdollSpamD=false;ragdollLoopD=false;highlight=Instance.new("Highlight");highlight.Name="highlight";highlight.Enabled=true;highlight.FillTransparency=0.9;highlight.OutlineTransparency=0;billboard=Instance.new("BillboardGui");billboard.Name="billboard";billboard.Size=UDim2.new(0,100,0,150);billboard.StudsOffset=Vector3.new(0,1,0);billboard.AlwaysOnTop=true;scrollframe=Instance.new("ScrollingFrame");scrollframe.Name="scrollframe";scrollframe.ScrollingEnabled=false;scrollframe.BackgroundTransparency=0.7;textlabel=Instance.new("TextLabel");textlabel.Name="textlabel";textlabel.TextScaled=true;textlabel.BackgroundTransparency=1;function updateCurrentBlobmanF() local char=plr.Character;local hrp=char:WaitForChild("HumanoidRootPart");local hum=char:WaitForChild("Humanoid");for _,blobs in workspace:GetDescendants() do if (blobs.Name~="CreatureBlobman") then continue;end if  not blobs:FindFirstChild("VehicleSeat") then continue;end if  not blobs.VehicleSeat:FindFirstChild("SeatWeld") then continue;end if (blobs.VehicleSeat.SeatWeld.Part1==hrp) then currentBlobS=blobs;end end end function blobGrabF(blob,target,side) local char=plr.Character;local hrp=char:WaitForChild("HumanoidRootPart");local hum=char:WaitForChild("Humanoid");local args={[1]=blob:FindFirstChild(side   .. "Detector" ),[2]=target,[3]=blob:FindFirstChild(side   .. "Detector" ):FindFirstChild(side   .. "Weld" )};blob.BlobmanSeatAndOwnerScript.CreatureGrab:FireServer(unpack(args));end function blobDropF(blob,target,side) local char=plr.Character;local hrp=char:WaitForChild("HumanoidRootPart");local hum=char:WaitForChild("Humanoid");local args={[1]=blob:FindFirstChild(side   .. "Detector" ):FindFirstChild(side   .. "Weld" ),[2]=target};blob.BlobmanSeatAndOwnerScript.CreatureDrop:FireServer(unpack(args));end function silentBlobGrabF(blob,target,side) local char=plr.Character;local hrp=char:WaitForChild("HumanoidRootPart");local hum=char:WaitForChild("Humanoid");local args={[1]=blob:FindFirstChild(side   .. "Detector" ),[2]=target,[3]=blob:FindFirstChild(side   .. "Detector" ).AttachPlayer};blob.BlobmanSeatAndOwnerScript.CreatureGrab:FireServer(unpack(args));end function updateCurrentHouseF() local char=plr.Character;local hrp=char:WaitForChild("HumanoidRootPart");local hum=char:WaitForChild("Humanoid");if (char.Parent==workspace) then currentHouseS=0;elseif (char.Parent.Name=="PlayersInPlots") then for i,e in workspace.Plots:GetChildren() do for i,e in e.PlotSign.ThisPlotsOwners:GetChildren() do if (e.Value==plr.Name) then if (e.Parent.Parent.Parent.Name=="Plot1") then currentHouseS=1;elseif (e.Parent.Parent.Parent.Name=="Plot2") then currentHouseS=2;elseif (e.Parent.Parent.Parent.Name=="Plot3") then currentHouseS=3;elseif (e.Parent.Parent.Parent.Name=="Plot4") then currentHouseS=4;elseif (e.Parent.Parent.Parent.Name=="Plot5") then currentHouseS=5;end end end end end end function mouseTargetInspectF() local char=plr.Character;local hrp=char:WaitForChild("HumanoidRootPart");local hum=char:WaitForChild("Humanoid");if mouse.Target then if mouse.Target.Parent:FindFirstChildOfClass("Humanoid") then currentInspectS=1;currentHouseInspectS=0;elseif mouse.Target.Parent:IsDescendantOf(workspace.Plots) then local current=mouse.Target;repeat current=current.Parent;until string.match(current.Name,"Plot") for i=1,5 do if (current.Name==("Plot"   .. i)) then currentHouseInspectS=i;end end currentInspectS=2;elseif (mouse.Target.Parent:IsDescendantOf(workspace.PlotItems) or string.match(mouse.Target.Parent.Parent.Name,"SpawnedInToys") or mouse.Target.Parent.Parent:FindFirstChild("SpawningPlatform")) then currentInspectS=3;currentHouseInspectS=0;else currentInspectS=4;currentHouseInspectS=0;end end end function ragdollSpamF() local char=plr.Character;local hrp=char:WaitForChild("HumanoidRootPart");local hum=char:WaitForChild("Humanoid");while ragdollSpamT and  not ragdollSpamD and  not permRagdollT  do ragdollSpamD=true;local args={[1]=hrp,[2]=0};rs:WaitForChild("CharacterEvents"):WaitForChild("RagdollRemote"):FireServer(unpack(args));task.wait(0.02);ragdollSpamD=false;end end function setRagdollF(state) local char=plr.Character;local hrp=char:WaitForChild("HumanoidRootPart");local hum=char:WaitForChild("Humanoid");if (char and char:FindFirstChild("HumanoidRootPart")) then rs:WaitForChild("CharacterEvents"):WaitForChild("RagdollRemote"):FireServer(hrp,(state and 1) or 0 );if hum then hum.PlatformStand=state;end end end function permRagdollLoopF() local char=plr.Character;local hrp=char:WaitForChild("HumanoidRootPart");local hum=char:WaitForChild("Humanoid");if permRagdollRunningS then return;end permRagdollRunningS=true;while permRagdollT do setRagdollF(true);task.wait(0.5);end permRagdollRunningS=false;setRagdollF(false);end function getBlobmanF() local char=plr.Character;local hrp=char:WaitForChild("HumanoidRootPart");local hum=char:WaitForChild("Humanoid");updateCurrentHouseF();if (currentHouseS==0) then if inv then return inv:FindFirstChild("CreatureBlobman");end return nil;else return workspace.PlotItems:FindFirstChild("Plot"   .. currentHouseS ):FindFirstChild("CreatureBlobman");end end function spawnBlobmanF() local char=plr.Character;local hrp=char:WaitForChild("HumanoidRootPart");local hum=char:WaitForChild("Humanoid");local spawnRemote=rs:WaitForChild("MenuToys"):WaitForChild("SpawnToyRemoteFunction");if spawnRemote then pcall(function() spawnRemote:InvokeServer("CreatureBlobman",hrp.CFrame * CFrame.new(0,0, -5) ,Vector3.new(0, -15.716,0));end);task.wait(1);blobmanInstanceS=getBlobmanF();end end function destroyBlobmanF() local char=plr.Character;local hrp=char:WaitForChild("HumanoidRootPart");local hum=char:WaitForChild("Humanoid");if (blobmanInstanceS and destroyAutoGucciT) then if (currentHouseS==0) then local args={[1]=blobmanInstanceS};local destroyRemote=rs:FindFirstChild("MenuToys") and rs.MenuToys:FindFirstChild("DestroyToy") ;if destroyRemote then pcall(function() destroyRemote:FireServer(unpack(args));end);end blobmanInstanceS=nil;else blobmanInstanceS.HumanoidRootPart.CFrame=workspace.Plots:FindFirstChild("Plot"   .. currentHouseS ).TeslaCoil.ZapPart.CFrame;blobmanInstanceS=nil;end end end function ragdollLoopF() local char=plr.Character;local hrp=char:WaitForChild("HumanoidRootPart");local hum=char:WaitForChild("Humanoid");if ragdollLoopD then return;end ragdollLoopD=true;while sitJumpT do if (char and hrp) then local args={[1]=hrp,[2]=0};rs:WaitForChild("CharacterEvents"):WaitForChild("RagdollRemote"):FireServer(unpack(args));end task.wait();end ragdollLoopD=false;end function sitJumpF() local char=plr.Character;local hrp=char:WaitForChild("HumanoidRootPart");local hum=char:WaitForChild("Humanoid");if ( not char or  not hum) then return;end local startTime=tick();while autoGucciT and ((tick() -startTime)<6)  do if blobmanInstanceS then local seat=blobmanInstanceS:FindFirstChildWhichIsA("VehicleSeat");if (seat and (seat.Occupant~=hum)) then seat:Sit(hum);end end task.wait(0.1);if (char and hum) then hum:ChangeState(Enum.HumanoidStateType.Jumping);end task.wait(0.1);end if blobmanInstanceS then destroyBlobmanF();end autoGucciT=false;sitJumpT=false;end function addToysF() end local Window=Rayfield:CreateWindow({Name="Matter",Icon=0,LoadingTitle="Matter",LoadingSubtitle="By Dungi",Theme="Default",DisableRayfieldPrompts=false,DisableBuildWarnings=false,ConfigurationSaving={Enabled=true,FolderName=nil,FileName="SIGMA"},Discord={Enabled=false,Invite="your mom just sucking my dick",RememberJoins=true},KeySystem=true,KeySettings={Title="Untitled",Subtitle="Key System",Note="No method of obtaining the key is provided",FileName="Key",SaveKey=true,GrabKeyFromSite=false,Key={"dungi sigma"}}});local keybindTab=Window:CreateTab("ANTI",0);local ragdollSection=keybindTab:CreateSection("Anti");local destroyAutoGucciToggle=keybindTab:CreateToggle({Name="AutoGucci",CurrentValue=false,Flag="autoGucciToggleFlag",Callback=function(Value) autoGucciT=Value;if autoGucciT then spawnBlobmanF();task.wait(1.1);if  not sitJumpT then coroutine.wrap(sitJumpF)();sitJumpT=true;end coroutine.wrap(ragdollLoopF)();else sitJumpT=false;end end});local destroyAutoGucciToggle=keybindTab:CreateToggle({Name="DestroyAutoGucci",CurrentValue=false,Flag="destroyAutoGucciToggleFlag",Callback=function(Value) destroyAutoGucciT=Value;end}); end
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
+--VARIABLES--
+plr = game.Players.LocalPlayer
+cam = workspace.CurrentCamera
+mouse = plr:GetMouse()
+uis = game:GetService("UserInputService")
+inv = workspace:WaitForChild(plr.Name.."SpawnedInToys")
+rs = game:GetService("ReplicatedStorage")
+rs2 = game:GetService("RunService")
+deb = game:GetService("Debris")
+
+--TOGGLES--
+flingT = nil
+killGrabT = nil
+infLineExtendT = nil
+antiGrab1T = nil
+antiGrab1AnchorT = true
+antiBlob1T = nil
+antiExplodeT = true
+antiLagT = nil
+antiStickyT = nil
+blobLoopT = nil
+walkSpeedT = nil
+jumpPowerT = nil
+infJumpT = nil
+noClipT = nil
+floatT = nil
+masslessT = nil
+blobLoopServerT = nil
+blobLoopServerTwoHandT = nil
+silentBlobServerT = nil
+lagT = nil
+pingT = nil
+shurikenLagServerT = nil
+slideTPT = nil
+inspectT = false
+inspectInfoT = false
+inspectInfoOnT = false
+ragdollSpamT = false
+permRagdollT = nil
+autoGucciT = nil
+destroyAutoGucciT = nil
+sitJumpT = false
+floatUpT = false
+floatDownT = false
+zoomT = false
+spychatT = nil
+spySelfT = nil
+publicSpyT = nil
+
+--VALUES--
+strengthV = 1000
+lineDistanceV = 0
+increaseLineExtendV = 0
+walkSpeedV = 16
+jumpPowerV = 24
+floatY = -3.1
+zoomV = 20
+linesV = 400
+packetsV = 3000
+playersInLoop1V = {}
+playersInLoop2V = {}
+
+--STATUSES--
+currentHouseS = 0
+blobmanInstanceS = nil
+currentBlobS = nil
+currentInspectS = 0
+currentHouseInspectS = 0
+currentInspectedAdorneeS = nil
+currentInspectedPartS = nil
+permRagdollRunningS = false
+returnPosS = CFrame.new(0, 0, 0)
+mouseTargetS = nil
+
+--DEBS--
+infJumpD = false
+inspectD = false
+slideTPD = false
+ragdollSpamD = false
+ragdollLoopD = false
+
+--INSTANCES--
+highlight = Instance.new("Highlight")
+highlight.Name = "highlight"
+highlight.Enabled = true
+highlight.FillTransparency = 0.9
+highlight.OutlineTransparency = 0
+
+billboard = Instance.new("BillboardGui")
+billboard.Name = "billboard"
+billboard.Size = UDim2.new(0, 100, 0, 150)
+billboard.StudsOffset = Vector3.new(0, 1, 0)
+billboard.AlwaysOnTop = true
+
+scrollframe = Instance.new("ScrollingFrame")
+scrollframe.Name = "scrollframe"
+scrollframe.ScrollingEnabled = false
+scrollframe.BackgroundTransparency = 0.7
+
+textlabel = Instance.new("TextLabel")
+textlabel.Name = "textlabel"
+textlabel.TextScaled = true
+textlabel.BackgroundTransparency = 1
+
+--GENERALFUNCS--
+function updateCurrentBlobmanF()
+    local char = plr.Character
+    local hrp = char:WaitForChild("HumanoidRootPart")
+    local hum = char:WaitForChild("Humanoid")
+    for _, blobs in workspace:GetDescendants() do
+        if blobs.Name ~= "CreatureBlobman" then continue end
+        if not blobs:FindFirstChild("VehicleSeat") then continue end
+        if not blobs.VehicleSeat:FindFirstChild("SeatWeld") then continue end
+        if blobs.VehicleSeat.SeatWeld.Part1 == hrp then
+            currentBlobS = blobs
+        end
+    end
+end
+
+function blobGrabF(blob, target, side)
+    local char = plr.Character
+    local hrp = char:WaitForChild("HumanoidRootPart")
+    local hum = char:WaitForChild("Humanoid")
+    local args = {
+        [1] = blob:FindFirstChild(side.."Detector"),
+        [2] = target,
+        [3] = blob:FindFirstChild(side.."Detector"):FindFirstChild(side.."Weld"),
+        }
+        blob.BlobmanSeatAndOwnerScript.CreatureGrab:FireServer(unpack(args))
+end
+
+function blobDropF(blob, target, side)
+    local char = plr.Character
+    local hrp = char:WaitForChild("HumanoidRootPart")
+    local hum = char:WaitForChild("Humanoid")
+    local args = {
+        [1] = blob:FindFirstChild(side.."Detector"):FindFirstChild(side.."Weld"),
+        [2] = target,
+        }
+        blob.BlobmanSeatAndOwnerScript.CreatureDrop:FireServer(unpack(args))
+end
+
+function silentBlobGrabF(blob, target, side)
+    local char = plr.Character
+    local hrp = char:WaitForChild("HumanoidRootPart")
+    local hum = char:WaitForChild("Humanoid")
+    local args = {
+        [1] = blob:FindFirstChild(side.."Detector"),
+        [2] = target,
+        [3] = blob:FindFirstChild(side.."Detector").AttachPlayer,
+        }
+        blob.BlobmanSeatAndOwnerScript.CreatureGrab:FireServer(unpack(args))
+end
+
+function updateCurrentHouseF()
+    local char = plr.Character
+    local hrp = char:WaitForChild("HumanoidRootPart")
+    local hum = char:WaitForChild("Humanoid")
+    if char.Parent == workspace then
+        currentHouseS = 0
+    elseif char.Parent.Name == "PlayersInPlots" then
+        for i, e in workspace.Plots:GetChildren() do
+            for i, e in e.PlotSign.ThisPlotsOwners:GetChildren() do
+                if e.Value == plr.Name then
+                    if e.Parent.Parent.Parent.Name == "Plot1" then
+						currentHouseS = 1
+					elseif e.Parent.Parent.Parent.Name == "Plot2" then
+						currentHouseS = 2
+					elseif e.Parent.Parent.Parent.Name == "Plot3" then
+						currentHouseS = 3
+					elseif e.Parent.Parent.Parent.Name == "Plot4" then
+						currentHouseS = 4
+					elseif e.Parent.Parent.Parent.Name == "Plot5" then
+						currentHouseS = 5
+					end
+                end
+            end
+        end
+	end
+end
+
+function mouseTargetInspectF()
+    local char = plr.Character
+    local hrp = char:WaitForChild("HumanoidRootPart")
+    local hum = char:WaitForChild("Humanoid")
+    if mouse.Target then
+        if mouse.Target.Parent:FindFirstChildOfClass("Humanoid") then
+            currentInspectS = 1
+            currentHouseInspectS = 0
+        elseif mouse.Target.Parent:IsDescendantOf(workspace.Plots) then
+                local current = mouse.Target
+                repeat
+                   current = current.Parent
+                until string.match(current.Name, "Plot")
+                for i = 1, 5 do
+                    if current.Name == "Plot"..i then
+                        currentHouseInspectS = i
+                    end
+                end
+                currentInspectS = 2
+        elseif mouse.Target.Parent:IsDescendantOf(workspace.PlotItems) or string.match(mouse.Target.Parent.Parent.Name, "SpawnedInToys") or mouse.Target.Parent.Parent:FindFirstChild("SpawningPlatform") then
+            currentInspectS = 3
+            currentHouseInspectS = 0
+        else
+            currentInspectS = 4
+            currentHouseInspectS = 0
+        end
+    end
+end
+
+--KEYBINDFUNCS--
+function ragdollSpamF()
+    local char = plr.Character
+    local hrp = char:WaitForChild("HumanoidRootPart")
+    local hum = char:WaitForChild("Humanoid")
+    while ragdollSpamT and not ragdollSpamD and not permRagdollT do
+        ragdollSpamD = true
+            local args = {
+                [1] = hrp,
+                [2] = 0
+            }
+            rs:WaitForChild("CharacterEvents"):WaitForChild("RagdollRemote"):FireServer(unpack(args))
+        task.wait(0.02)
+        ragdollSpamD = false
+    end
+end
+
+function setRagdollF(state)
+    local char = plr.Character
+    local hrp = char:WaitForChild("HumanoidRootPart")
+    local hum = char:WaitForChild("Humanoid")
+    if char and char:FindFirstChild("HumanoidRootPart") then
+        rs:WaitForChild("CharacterEvents"):WaitForChild("RagdollRemote"):FireServer(hrp, state and 1 or 0)
+        if hum then hum.PlatformStand = state end
+    end
+end
+
+function permRagdollLoopF()
+    local char = plr.Character
+    local hrp = char:WaitForChild("HumanoidRootPart")
+    local hum = char:WaitForChild("Humanoid")
+    if permRagdollRunningS then return end
+    permRagdollRunningS = true
+    while permRagdollT do
+        setRagdollF(true)
+        task.wait(0.5)
+    end
+    permRagdollRunningS = false
+    setRagdollF(false)
+end
+
+function getBlobmanF()
+    local char = plr.Character
+    local hrp = char:WaitForChild("HumanoidRootPart")
+    local hum = char:WaitForChild("Humanoid")
+    updateCurrentHouseF()
+    if currentHouseS == 0 then
+        if inv then return inv:FindFirstChild("CreatureBlobman") end
+        return nil
+    else
+        return workspace.PlotItems:FindFirstChild("Plot"..currentHouseS):FindFirstChild("CreatureBlobman")
+    end
+end
+
+function spawnBlobmanF()
+    local char = plr.Character
+    local hrp = char:WaitForChild("HumanoidRootPart")
+    local hum = char:WaitForChild("Humanoid")
+    local spawnRemote = rs:WaitForChild("MenuToys"):WaitForChild("SpawnToyRemoteFunction")
+    if spawnRemote then
+        pcall(function()spawnRemote:InvokeServer("CreatureBlobman", hrp.CFrame*CFrame.new(0,0,-5),Vector3.new(0, -15.716, 0))end)
+        task.wait(1)
+        blobmanInstanceS = getBlobmanF()
+    end
+end
+
+function destroyBlobmanF()
+    local char = plr.Character
+    local hrp = char:WaitForChild("HumanoidRootPart")
+    local hum = char:WaitForChild("Humanoid")
+    if blobmanInstanceS and destroyAutoGucciT then
+        if currentHouseS == 0 then
+            local args = {[1] = blobmanInstanceS}
+            local destroyRemote = rs:FindFirstChild("MenuToys") and rs.MenuToys:FindFirstChild("DestroyToy")
+            if destroyRemote then pcall(function()destroyRemote:FireServer(unpack(args))end)end
+            blobmanInstanceS = nil
+        else
+            blobmanInstanceS.HumanoidRootPart.CFrame = workspace.Plots:FindFirstChild("Plot"..currentHouseS).TeslaCoil.ZapPart.CFrame
+            blobmanInstanceS = nil
+        end
+    end
+end
+
+function ragdollLoopF()
+    local char = plr.Character
+    local hrp = char:WaitForChild("HumanoidRootPart")
+    local hum = char:WaitForChild("Humanoid")
+    if ragdollLoopD then return end
+    ragdollLoopD = true
+    while sitJumpT do
+        if char and hrp then
+            local args={[1] = hrp, [2] = 0}
+            rs:WaitForChild("CharacterEvents"):WaitForChild("RagdollRemote"):FireServer(unpack(args))
+        end
+        task.wait()
+    end
+    ragdollLoopD = false
+end
+
+function sitJumpF()
+    local char = plr.Character
+    local hrp = char:WaitForChild("HumanoidRootPart")
+    local hum = char:WaitForChild("Humanoid")
+    if not char or not hum then return end
+    local startTime = tick()
+    while autoGucciT and tick()-startTime<6 do
+        if blobmanInstanceS then
+            local seat = blobmanInstanceS:FindFirstChildWhichIsA("VehicleSeat")
+            if seat and seat.Occupant ~= hum then seat:Sit(hum) end
+        end
+        task.wait(0.1)
+        if char and hum then hum:ChangeState(Enum.HumanoidStateType.Jumping)end
+        task.wait(0.1)
+    end
+    if blobmanInstanceS then destroyBlobmanF() end
+    autoGucciT = false
+    sitJumpT = false
+end
+
+--TOYFUNCS--
+function addToysF()
+end
+
+--GUI--
+local Window = Rayfield:CreateWindow({
+    Name = "Matter",
+    Icon = 0,
+    LoadingTitle = "Matter",
+    LoadingSubtitle = "By Dungi",
+    Theme = "Default",
+ 
+    DisableRayfieldPrompts = false,
+    DisableBuildWarnings = false,
+ 
+    ConfigurationSaving = {
+       Enabled = true,
+       FolderName = nil,
+       FileName = "SIGMA"
+    },
+ 
+    Discord = {
+       Enabled = false,
+       Invite = "your mom just sucking my dick",
+       RememberJoins = true
+    },
+ 
+    KeySystem = true,
+    KeySettings = {
+       Title = "Untitled",
+       Subtitle = "Key System",
+       Note = "No method of obtaining the key is provided",
+       FileName = "Key",
+       SaveKey = true,
+       GrabKeyFromSite = false,
+       Key = {"dungi sigma"}
+	}
+})
+
+--TABS--
+local keybindTab = Window:CreateTab("ANTI", 0)
+
+--KEYBINDTAB--
+
+local ragdollSection = keybindTab:CreateSection("Anti")
+
+local destroyAutoGucciToggle = keybindTab:CreateToggle({
+    Name = "AutoGucci",
+    CurrentValue = false,
+    Flag = "autoGucciToggleFlag",
+    Callback = function(Value)
+        autoGucciT = Value
+        if autoGucciT then
+            spawnBlobmanF()
+            task.wait(1.1)
+            if not sitJumpT then
+                coroutine.wrap(sitJumpF)()
+                sitJumpT = true
+            end
+            coroutine.wrap(ragdollLoopF)()
+        else
+            sitJumpT = false
+        end
+    end
+})
+
+local destroyAutoGucciToggle = keybindTab:CreateToggle({
+    Name = "DestroyAutoGucci",
+    CurrentValue = false,
+    Flag = "destroyAutoGucciToggleFlag",
+    Callback = function(Value)
+        destroyAutoGucciT = Value
+    end
+})
